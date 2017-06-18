@@ -1,8 +1,11 @@
 <template>
   <div class="home">
-    <h1>{{ msg }}</h1>    
+    <h1>{{ msg }}</h1>
     <ul>
-      <router-link :to="'card'">to card</router-link>
+      <router-link :to="'/card'">to card</router-link>
+    </ul>
+    <ul>
+      <router-link :to="'/template'">to template</router-link>
     </ul>
   </div>
 </template>
