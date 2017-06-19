@@ -1,17 +1,13 @@
 <template>
-  <div >
-    {{selectedItem}}
-    <select2 :value="selectedItem" class="select2-lookup">
+  <div class="lookup">
+    <select :value="selectedItem" class="select2-lookup" >
       <option disabled value="0">Выберите один</option>
-    </select2>
+    </select>
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
-
-import Select2 from './Select2'
-Vue.component('select2', Select2)
 
 export default {
   name: 'lookup',
@@ -50,7 +46,7 @@ export default {
         .trigger('change')
         .on('change', function () {
           // self.val = this.value;
-          vm.$emit('input', this.value)
+//          vm.$emit('input', this.value)
         })
 
         // $(".select2-lookup");
@@ -79,3 +75,27 @@ export default {
   }
 }
 </script>
+
+<style>
+  select, .select2 {
+    width: 90%;
+    margin: 0 auto;
+    border-radius: 0 !important;
+    display: block;
+  }
+
+  .select2-container .select2-selection {
+    height: 35px;
+    overflow: hidden;
+  }
+
+  .lookup > span {
+    width: 100%!important;
+    /*height: 50px!important;*/
+  }
+  /*.select2-choices {*/
+    /*min-height: 500px;*/
+    /*max-height: 500px;*/
+    /*overflow-y: auto;*/
+  /*}*/
+</style>
