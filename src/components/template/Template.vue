@@ -1,34 +1,34 @@
 <template>
-  <div class="card">
-    <h1>{{ msg }}</h1>
-    <filter-bar></filter-bar>
-    <vuetable ref="vuetable"
-              api-url="http://localhost:8090/template/lookup"
-              data-path="data"
-              pagination-path=""
-              detail-row-component="my-detail-row"
-              no-data-template="Нет информации для отображения"
-              @vuetable:cell-clicked="onCellClicked"
-              :fields="fields"
-              :per-page="20"
-              :multi-sort="false"
-              :sort-order="sortOrder"
-              :append-params="moreParams"
-              :query-params="{ sort: 'sort_order', page: 'page_no', perPage: 'page_size' }"
-    ></vuetable>
-    <div class="vuetable-pagination ui basic segment grid">
-      <vuetable-pagination-info
-        ref="paginationInfo"
-        no-data-template="..."
-      ></vuetable-pagination-info>
-      <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
+  <div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+      <h1>{{ msg }}</h1>
+      <filter-bar></filter-bar>
+      <vuetable ref="vuetable"
+                api-url="http://localhost:8090/template/lookup"
+                data-path="data"
+                pagination-path=""
+                detail-row-component="my-detail-row"
+                no-data-template="Нет информации для отображения"
+                @vuetable:cell-clicked="onCellClicked"
+                :fields="fields"
+                :per-page="3"
+                :multi-sort="false"
+                :sort-order="sortOrder"
+                :append-params="moreParams"
+                :query-params="{ sort: 'sort_order', page: 'page_no', perPage: 'page_size' }"
+      ></vuetable>
+      <div class="vuetable-pagination ui basic segment grid">
+        <vuetable-pagination-info
+          ref="paginationInfo"
+          no-data-template="..."
+        ></vuetable-pagination-info>
+        <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-  // import accounting from 'accounting'
-  // import moment from 'moment'
   import Vue from 'vue'
 
   import CustomActions from './CustomActions'
@@ -54,11 +54,11 @@
     },
     data () {
       return {
-        msg: 'Поиск шаблонов',
+        msg: 'Управление шаблонами',
         fields: [{
           name: 'id',
-          title: 'Номер шаблона',
-          titleClass: 'center aligned',
+          title: 'ИД',
+          titleClass: 'center aligned w100',
           dataClass: 'center aligned'
         }, {
           name: 'name',
@@ -135,13 +135,13 @@
 
 <style>
   .w150 {
-    width: 150px;
+    width: 100px;
   }
 
   .vuetable th#_id {
-    width: 150px;
+    width: 50px;
     max-width: 200px;
-    min-width: 100px;
+    min-width: 50px;
   }
 
   .card {
@@ -166,5 +166,76 @@
     transition: background .1s ease;
     box-sizing: inherit;
     height: 2.1666em !important;
+  }
+
+  @media only screen and (max-width: 767px) {
+    .ui.table:not(.unstackable) {
+      width: 100%;
+    }
+
+    .ui.table:not(.unstackable)  {
+      border: none;
+    }
+
+    .ui.table:not(.unstackable) tbody,
+    .ui.table:not(.unstackable) tr,
+    .ui.table:not(.unstackable) tr > td {
+      width: auto !important;
+      display: inline-block !important;
+    }
+
+    .ui.selectable.table tbody tr:hover,
+    .ui.table tbody tr td.selectable:hover {
+      background: rgba(0,0,0,.05)!important;
+      color: rgba(0,0,0,.95)!important;
+    }
+
+    .ui.selectable.table tbody tr.vuetable-detail-row:hover,
+    .ui.table tbody tr.vuetable-detail-row td.selectable:hover {
+      background: none!important;
+      color: rgba(0,0,0,.95)!important;
+      border: none;
+    }
+
+    .ui.table:not(.unstackable) tr.vuetable-detail-row {
+      border: none;
+    }
+
+    .ui.table:not(.unstackable) thead,
+    .ui.table:not(.unstackable) tfoot,
+    .ui.table:not(.unstackable) tr > th {
+      display: none;
+    }
+
+    .ui.table:not(.unstackable) {
+      padding: 0;
+    }
+
+    .ui.table:not(.unstackable) tr {
+      padding-top: 1em;
+      padding-bottom: 1em;
+      box-shadow: 0px -1px 0px 0px rgba(0, 0, 0, 0.1) inset !important;
+    }
+
+    .ui.table:not(.unstackable) tbody > tr {
+      background: none;
+      border: 1px solid rgba(34,36,38,.1)!important;
+      border-radius: 25px;
+      box-shadow: 0px -2px 2px 0px rgba(0, 0, 0, 0.15) inset !important;
+      padding: 3px!important;
+      margin: 3px 2px!important;
+    }
+
+    .ui.table:not(.unstackable) tbody > tr.vuetable-detail-row {
+      background: none;
+      border: none!important;
+      border-radius: 0;
+      box-shadow: none!important;
+    }
+
+    .ui.table:not(.unstackable) th:first-child,
+    .ui.table:not(.unstackable) td:first-child {
+      font-weight: normal;
+    }
   }
 </style>

@@ -1,9 +1,9 @@
+<!--glyphicon bootstrap not showing-->
 <template>
   <div>
     <div class="row">
-
       <form id="edit-template" action="#" class="form-signin">
-        <div class="col-md-3 col-sm-3">
+        <div class="col-md-3 col-sm-3" style="padding-bottom: 20px;">
           <div class="photo photo-padded">
             <photo-upload
               buttonClass="btn btn-primary"
@@ -39,6 +39,22 @@
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 col">
               <input type="submit" class="btn btn-lg btn-success" value="Применить">
             </div>
+
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 col">
+              <vuetable ref="rangesViewTable"
+                        id="ranges-view-vable"
+                        api-url="http://localhost:8090/template/ranges?id=2"
+                        data-path="data"
+                        pagination-path=""
+                        no-data-template="Нет информации для отображения"
+                        :fields="fields"
+                        :multi-sort="false"
+                        :append-params="moreParams"
+                        @vuetable:cell-clicked="onCellClicked"
+                        :query-params="{ sort: 'sort_order', page: 'page_no', perPage: 'page_size' }"
+              ></vuetable>
+            </div>
+
           </div>
         </div>
       </form>
@@ -57,6 +73,9 @@
         </ul>
       </div>
 
+      <div class="col-lg-6 col-md-6 col-sm-6">
+
+      </div>
     </div>
 
     <div class="row">
@@ -98,17 +117,22 @@
 
   import Vue from 'vue'
   import VueEvents from 'vue-events'
+  import Vuetable from 'vuetable-2/src/components/Vuetable'
+
   import Chrome from 'vue-color/src/components/Chrome.vue'
   import PhotoUpload from 'vue-photo-upload'
   import ModalColorPicker from './ModalColorPicker'
+  import DetailRow from './DetailRow'
 
   import Lookup from './Lookup'
 
   Vue.use(VueEvents)
   Vue.use(PhotoUpload);
+  Vue.component('vuetable', Vuetable)
   Vue.component('lookup', Lookup)
   Vue.component('chrome-picker', Chrome)
   Vue.component('modal', ModalColorPicker)
+  Vue.component('my-detail-row', DetailRow)
 
   export default {
     name: 'tview',
@@ -123,7 +147,25 @@
         val: null,
         showModal: false,
         color: 'transparent',
-        colors: {hex: '#FFFFFF'}
+        colors: {hex: '#FFFFFF'},
+        fields: [{
+          name: 'id',
+          title: 'ИД',
+          titleClass: 'center aligned w100',
+          dataClass: 'center aligned',
+          visible: false
+        }, {
+          name: 'range_start',
+          title: 'Начало',
+          titleClass: 'right aligned',
+          dataClass: 'right aligned'
+        }, {
+          name: 'range_end',
+          title: 'Окончание',
+          titleClass: 'right aligned',
+          dataClass: 'right aligned'
+        }],
+        moreParams: {}
       }
     },
     created: function () {
@@ -149,6 +191,10 @@
           self.colors = {hex: response.color}
           console.log(response)
         })
+      },
+      onCellClicked (data, field, event) {
+        if (field.name != 'seller')
+          this.$refs.rangesViewTable.toggleDetailRow(data.id)
       }
     }
   }
@@ -215,5 +261,84 @@
   .button-color-picker {
     padding-bottom: 5px;
     border-bottom: double 10px transparent;
+  }
+
+  @media all {
+    .ui.table#ranges-view-vable:not(.unstackable) {
+      width: 100%;
+    }
+
+    .ui.table#ranges-view-vable:not(.unstackable),
+    .ui.table#ranges-view-vable:not(.unstackable) tr.vuetable-detail-row,
+    .ui.celled.table#ranges-view-vable tr td,
+    .ui.celled.table#ranges-view-vable tr th {
+      border: none;
+    }
+
+    .ui.celled.table#ranges-view-vable tr td:first-child {
+      border-right: 1px solid rgba(34, 36, 38, .1) !important;
+    }
+
+    .ui.table#ranges-view-vable:not(.unstackable) tr {
+      float: right;
+      cursor: pointer;
+    }
+
+    .ui.table#ranges-view-vable:not(.unstackable) tbody,
+    .ui.table#ranges-view-vable:not(.unstackable) tr,
+    .ui.table#ranges-view-vable:not(.unstackable) tr > td {
+      width: auto !important;
+      display: inline-block !important;
+    }
+
+    .ui.selectable.table#ranges-view-vable tbody tr:hover,
+    .ui.table#ranges-view-vable tbody tr td.selectable:hover {
+      background: rgba(0, 0, 0, .05) !important;
+      color: rgba(0, 0, 0, .95) !important;
+    }
+
+    .ui.selectable.table#ranges-view-vable tbody tr.vuetable-detail-row:hover,
+    .ui.table#ranges-view-vable tbody tr.vuetable-detail-row td.selectable:hover {
+      background: none !important;
+      color: rgba(0, 0, 0, .95) !important;
+      border: none;
+    }
+
+    .ui.table#ranges-view-vable:not(.unstackable) thead,
+    .ui.table#ranges-view-vable:not(.unstackable) tfoot,
+    .ui.table#ranges-view-vable:not(.unstackable) tr > th {
+      display: none;
+    }
+
+    .ui.table#ranges-view-vable:not(.unstackable) {
+      padding: 0;
+    }
+
+    .ui.table#ranges-view-vable:not(.unstackable) tr {
+      padding-top: 1em;
+      padding-bottom: 1em;
+      box-shadow: 0px -1px 0px 0px rgba(0, 0, 0, 0.1) inset !important;
+    }
+
+    .ui.table#ranges-view-vable:not(.unstackable) tbody > tr {
+      background: none;
+      border: 1px solid rgba(34, 36, 38, .1) !important;
+      border-radius: 25px;
+      box-shadow: 0px -2px 2px 0px rgba(0, 0, 0, 0.15) inset !important;
+      padding: 3px !important;
+      margin: 3px 2px !important;
+    }
+
+    .ui.table#ranges-view-vable:not(.unstackable) tbody > tr.vuetable-detail-row {
+      background: none;
+      border: none !important;
+      border-radius: 0;
+      box-shadow: none !important;
+    }
+
+    .ui.table#ranges-view-vable:not(.unstackable) th:first-child,
+    .ui.table#ranges-view-vable:not(.unstackable) td:first-child {
+      font-weight: normal;
+    }
   }
 </style>

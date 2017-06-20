@@ -4,8 +4,6 @@
     </button>
     <button class="ui basic button" @click="itemAction('/template/edit', rowData, rowIndex)"><i class="edit icon"></i>
     </button>
-    <button class="ui basic button" @click="itemAction('/template/delete', rowData, rowIndex)"><i
-      class="delete icon"></i></button>
   </div>
 </template>
 
