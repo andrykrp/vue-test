@@ -10,11 +10,11 @@
     </div>
     <div class="inline field">
       <label><b>Дата создания шаблона: </b></label>
-      <span>{{rowData.seller.createDate}}</span>
+      <span>{{rowData.createdDate}}</span>
     </div>
     <div class="inline field">
       <label><b>Дата последнего обновления шаблона: </b></label>
-      <span>{{rowData.seller.updatedDate}}</span>
+      <span>{{rowData.updatedDate}}</span>
     </div>
     <div class="inline field">
       <label><b>Описание: </b></label>

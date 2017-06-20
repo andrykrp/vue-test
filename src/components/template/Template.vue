@@ -1,9 +1,6 @@
 <template>
   <div class="card">
     <h1>{{ msg }}</h1>
-    <!-- <ul>
-    <router-link :to="'home'">to home</router-link>
-  </ul> -->
     <filter-bar></filter-bar>
     <vuetable ref="vuetable"
               api-url="http://localhost:8090/template/lookup"
