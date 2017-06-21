@@ -13,7 +13,7 @@
             </slot>
           </div>
 
-          <button class="" @click.prevent="$emit('close')">
+          <button class="btn btn-sm btn-success" @click.prevent="$emit('close')">
             Готово
           </button>
         </div>

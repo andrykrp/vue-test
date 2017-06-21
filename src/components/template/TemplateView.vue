@@ -1,23 +1,21 @@
 <template>
   <div>
     <div class="row">
-      <form id="edit-template" action="#" class="form-signin">
+      <div id="edit-template" class="form-signin">
         <div class="col-md-3 col-sm-3" style="padding-bottom: 20px;">
-          <div class="photo photo-padded">
-            <photo-upload
-              buttonClass="btn btn-primary"
-              :enableEdits="true"
-              :photoDefault="'http://eseniakapustina.ru/wp-content/uploads/2015/04/10648500.png'"
-              :showMessages="true"
-              @photo-submit="photo_upload"
-              @photo-change="photo_changed"
-            ></photo-upload>
-          </div>
+          <photo-upload
+            buttonClass="btn btn-primary"
+            :enableEdits="true"
+            :photoDefault="this.template.photo"
+            :showMessages="true"
+            @photo-change="onPhotoChanged"
+          ></photo-upload>
+
           <div style="text-align: center">
 
             <span id="show-modal" class="button-text button-color-picker" @click="showModal = true"
-                  :style="{'border-bottom-color': color}">Задать базовый цвет</span>
-            <modal v-if="showModal" @close="showModal = false; color = colors.hex">
+                  :style="{'border-bottom-color': template.color}">Задать базовый цвет</span>
+            <modal v-if="showModal" @close="showModal = false; template.color = colors.hex">
               <chrome-picker v-model="colors" slot="body"></chrome-picker>
             </modal>
 
@@ -28,24 +26,24 @@
           <div class="row row-top-padded">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 col">
               <label>Имя шаблона</label>
-              <input type="text" v-model="template.name" class="form-control" style=""
+              <input name="template-name" type="text" v-model="template.name" class="form-control" style=""
                      placeholder="Имя шаблона">
             </div>
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 col">
               <label>Выбор селлера</label>
-              <lookup :selectedItem="val"></lookup>
+              <lookup v-model="template.seller.id" :selectedItem="template.seller.id"></lookup>
             </div>
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 col">
-              <input type="submit" class="btn btn-lg btn-success" value="Применить">
+              <div id="submit-form-template" class="btn btn-lg btn-success">Применить</div>
             </div>
 
             <div id="ranges-view-block" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 col">
               <vuetable ref="rangesViewTable"
                         id="ranges-view-vable"
-                        api-url="http://localhost:8090/template/ranges?id=2"
+                        :api-url="'http://localhost:8090/template/ranges?id=' + this.template.id"
                         data-path="data"
                         pagination-path=""
-                        no-data-template="Нет информации для отображения"
+                        no-data-template="Диапазоны не определены"
                         :fields="fields"
                         :multi-sort="false"
                         :append-params="moreParams"
@@ -57,13 +55,15 @@
 
           </div>
         </div>
-      </form>
+      </div>
 
       <div id="template-seller-description" class="col-md-4 col-sm-4">
-        <div class="text-bold">{{ template.name }}
-          <form id="disable-template" action="#">
-            <input type="submit" class="button-text small" value="[X] Отключить шаблон">
-          </form>
+        <div class="template-title">
+          <div class="btn-group" data-toggle="buttons-checkbox">
+            <input id="template-state-change" type="checkbox" class="collapsed" data-toggle="toggle"
+                   data-onstyle="success" data-offstyle="danger" data-size="mini">
+          </div>
+          <div class="text-bold">{{ template.name }}</div>
         </div>
         <p align="justify">{{ template.seller.description }}</p>
         <div class="text-bold" style="padding-bottom: 10px">Информация</div>
@@ -119,8 +119,8 @@
   import VueEvents from 'vue-events'
   import Vuetable from 'vuetable-2/src/components/Vuetable'
 
-  import Chrome from 'vue-color/src/components/Chrome.vue'
-  import PhotoUpload from 'vue-photo-upload'
+  import Chrome from 'vue-color/src/components/Chrome'
+  import PhotoUpload from './PhotoUpload'
   import ModalColorPicker from './ModalColorPicker'
   import DetailRow from './DetailRow'
   import RangeDetailRow from './../range/RangeDetailRow'
@@ -128,7 +128,7 @@
   import Lookup from './Lookup'
 
   Vue.use(VueEvents)
-  Vue.use(PhotoUpload);
+  Vue.component('photo-upload', PhotoUpload);
   Vue.component('vuetable', Vuetable)
   Vue.component('lookup', Lookup)
   Vue.component('chrome-picker', Chrome)
@@ -144,12 +144,10 @@
     data () {
       return {
         msg: 'Просмотр / редактирование шаблона',
-        template: {name: '', seller: {id: ''}, color: 'ffffff'},
+        template: [],
         sellers: null,
-        val: null,
         showModal: false,
-        color: 'transparent',
-        colors: {hex: '#FFFFFF'},
+        colors: [],
         fields: [{
           name: 'id',
           title: 'ИД',
@@ -164,7 +162,7 @@
         }, {
           name: 'state',
           title: 'Состояние',
-          callback: 'to_icon'
+          callback: 'convertToIcon'
         }, {
           name: 'range_end',
           title: 'Окончание',
@@ -175,31 +173,65 @@
       }
     },
     created: function () {
-      this.fetchData()
+      this.loadData()
     },
-
-    watch: {
-      currentBranch: 'fetchData'
+    mounted () {
+      this.createElements()
     },
-
     methods: {
-      to_icon (value) {
-        return value === 'active' ? '<span class="glyphicon glyphicon-ok"></span>' :'<span class="glyphicon glyphicon-remove"></span>';
+      convertToIcon (value) {
+        return value === 'active' ? '<span class="glyphicon glyphicon-ok"></span>' : '<span class="glyphicon glyphicon-remove"></span>';
       },
-      photo_upload: function (e, file) {
-        console.log(e, file)
+      onPhotoChanged: function (e, file) {
+        var _color = 'A'
+        if (this.template.color != undefined && this.template.color != null) {
+          _color = this.template.color.replace('\#', '');
+        }
+        this.template.photo = 'http://placehold.it/300x300/' + _color + '/ffffff?text=' + encodeURIComponent(this.template.name);
+        console.log('upload', this.template.image)
       },
-      photo_changed: function (e, file) {
-        console.log(e, file)
-      },
-      fetchData: function () {
+      loadData: function () {
         var self = this
-        $.get('http://localhost:8090/template/' + this.$route.query.id).then(function (response) {
-          self.template = response
-          self.color = '#' + response.color
-          self.colors = {hex: response.color}
-          console.log(response)
-        })
+
+        $.ajax({
+          type: "GET",
+          async: false,
+          url: 'http://localhost:8090/template/' + self.$route.query.id,
+          data: JSON.stringify(self.template),
+          success: function (response) {
+            self.template = response
+            self.colors = {hex: response.color}
+            if (!self.template.photo){
+              self.template.photo = 'http://placehold.it/300x300/D/ffffff?text=no+image'
+            }
+          }
+        });
+      },
+      createElements: function () {
+        var self = this;
+
+        $('#template-state-change')
+          .bootstrapToggle(self.template.state === 'active' ? 'on' : 'off')
+          .change(function () {
+            $.get('http://localhost:8090/template/state?templateId=' + self.template.id + '&state=' + $(this).prop('checked'))
+              .then(function (response) {
+              })
+          });
+
+        $("#submit-form-template").click(function () {
+          $.ajax({
+            type: "POST",
+            url: 'http://localhost:8090/template/update',
+            contentType: 'application/json',
+            data: JSON.stringify(self.template),
+            dataType: 'json',
+            success: function (response) {
+              self.template = response
+//              console.log(response)
+            }
+          });
+        });
+
       },
       onCellClicked (data, field, event) {
         if (field.name != 'seller')
@@ -210,17 +242,6 @@
 </script>
 
 <style>
-  .photo {
-    box-shadow: 0 0 2px rgba(0, 0, 0, 0.3), 0 4px 8px rgba(0, 0, 0, 0.3);
-    border-radius: 5px;
-    margin: auto;
-    padding: 5px;
-  }
-
-  .photo-padded {
-    padding: 5px;
-    margin: 5px -2px 15px;
-  }
 
   .text-bold {
     font-weight: 400;
@@ -272,6 +293,19 @@
     border-bottom: double 10px transparent;
   }
 
+  .template-title {
+    margin: 0 0 10px;
+  }
+
+  div.template-title > div.text-bold {
+    display: inline;
+    padding-left: 15px;
+  }
+
+  div.template-title > div.btn-group {
+    display: block;
+  }
+
   @media all {
     .ui.table#ranges-view-vable:not(.unstackable) {
       width: 100%;
@@ -284,8 +318,12 @@
       border: none;
     }
 
+    .ui.table#ranges-view-vable:not(.unstackable) tbody {
+      float: right !important;
+    }
+
     .ui.table#ranges-view-vable:not(.unstackable) tr {
-      float: right;
+      float: right !important;
       cursor: pointer;
     }
 
@@ -350,13 +388,13 @@
 
   @media all and (max-width: 992px) {
     #ranges-view-block {
-      display: inline!important;
+      display: inline !important;
     }
 
     .ui.table#ranges-view-vable:not(.unstackable) tbody,
     .ui.table#ranges-view-vable:not(.unstackable) tr,
     .ui.table#ranges-view-vable:not(.unstackable) tr > td {
-      width: auto!important;
+      width: auto !important;
       display: block !important;
       padding: 2px 3px;
       margin: 2px 15px;

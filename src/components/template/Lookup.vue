@@ -42,31 +42,19 @@ export default {
             }
           })
         })
-        .val(self.$route.query.id)
+        .val(self.$parent.template.seller.id)
         .trigger('change')
         .on('change', function () {
-          // self.val = this.value;
-//          vm.$emit('input', this.value)
+          self.$parent.template.seller.id = this.value
         })
-
-        // $(".select2-lookup");
       })
     }
   },
-  mounted () {
-    $(this.$el).ready(() => {
-      // $('.select2-lookup').on('change', (e) => {
-      //   this.$emit('select', e.target.value)
-      // })
-    })
-  },
   watch: {
     value: function (value) {
-      // update value
       $(this.$el).val(value).trigger('change');
     },
     options: function (options) {
-      // update options
       $(this.$el).select2({ data: options })
     }
   },
