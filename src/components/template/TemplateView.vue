@@ -1,4 +1,3 @@
-<!--glyphicon bootstrap not showing-->
 <template>
   <div>
     <div class="row">
@@ -40,7 +39,7 @@
               <input type="submit" class="btn btn-lg btn-success" value="Применить">
             </div>
 
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 col">
+            <div id="ranges-view-block" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 col">
               <vuetable ref="rangesViewTable"
                         id="ranges-view-vable"
                         api-url="http://localhost:8090/template/ranges?id=2"
@@ -51,6 +50,7 @@
                         :multi-sort="false"
                         :append-params="moreParams"
                         @vuetable:cell-clicked="onCellClicked"
+                        detail-row-component="RangeDetailRow"
                         :query-params="{ sort: 'sort_order', page: 'page_no', perPage: 'page_size' }"
               ></vuetable>
             </div>
@@ -59,7 +59,7 @@
         </div>
       </form>
 
-      <div class="col-md-4">
+      <div id="template-seller-description" class="col-md-4 col-sm-4">
         <div class="text-bold">{{ template.name }}
           <form id="disable-template" action="#">
             <input type="submit" class="button-text small" value="[X] Отключить шаблон">
@@ -123,6 +123,7 @@
   import PhotoUpload from 'vue-photo-upload'
   import ModalColorPicker from './ModalColorPicker'
   import DetailRow from './DetailRow'
+  import RangeDetailRow from './../range/RangeDetailRow'
 
   import Lookup from './Lookup'
 
@@ -133,6 +134,7 @@
   Vue.component('chrome-picker', Chrome)
   Vue.component('modal', ModalColorPicker)
   Vue.component('my-detail-row', DetailRow)
+  Vue.component('RangeDetailRow', RangeDetailRow)
 
   export default {
     name: 'tview',
@@ -160,6 +162,10 @@
           titleClass: 'right aligned',
           dataClass: 'right aligned'
         }, {
+          name: 'state',
+          title: 'Состояние',
+          callback: 'to_icon'
+        }, {
           name: 'range_end',
           title: 'Окончание',
           titleClass: 'right aligned',
@@ -177,6 +183,9 @@
     },
 
     methods: {
+      to_icon (value) {
+        return value === 'active' ? '<span class="glyphicon glyphicon-ok"></span>' :'<span class="glyphicon glyphicon-remove"></span>';
+      },
       photo_upload: function (e, file) {
         console.log(e, file)
       },
@@ -275,10 +284,6 @@
       border: none;
     }
 
-    .ui.celled.table#ranges-view-vable tr td:first-child {
-      border-right: 1px solid rgba(34, 36, 38, .1) !important;
-    }
-
     .ui.table#ranges-view-vable:not(.unstackable) tr {
       float: right;
       cursor: pointer;
@@ -288,7 +293,7 @@
     .ui.table#ranges-view-vable:not(.unstackable) tr,
     .ui.table#ranges-view-vable:not(.unstackable) tr > td {
       width: auto !important;
-      display: inline-block !important;
+      display: inline-block;
     }
 
     .ui.selectable.table#ranges-view-vable tbody tr:hover,
@@ -327,6 +332,7 @@
       box-shadow: 0px -2px 2px 0px rgba(0, 0, 0, 0.15) inset !important;
       padding: 3px !important;
       margin: 3px 2px !important;
+      text-align: center;
     }
 
     .ui.table#ranges-view-vable:not(.unstackable) tbody > tr.vuetable-detail-row {
@@ -339,6 +345,27 @@
     .ui.table#ranges-view-vable:not(.unstackable) th:first-child,
     .ui.table#ranges-view-vable:not(.unstackable) td:first-child {
       font-weight: normal;
+    }
+  }
+
+  @media all and (max-width: 992px) {
+    #ranges-view-block {
+      display: inline!important;
+    }
+
+    .ui.table#ranges-view-vable:not(.unstackable) tbody,
+    .ui.table#ranges-view-vable:not(.unstackable) tr,
+    .ui.table#ranges-view-vable:not(.unstackable) tr > td {
+      width: auto!important;
+      display: block !important;
+      padding: 2px 3px;
+      margin: 2px 15px;
+    }
+  }
+
+  @media all and (max-width: 767px) {
+    #template-seller-description {
+      display: none;
     }
   }
 </style>
