@@ -34,7 +34,7 @@
               <lookup v-model="template.seller.id" :selectedItem="template.seller.id"></lookup>
             </div>
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 col">
-              <div id="submit-form-template" class="btn btn-lg btn-success">Применить</div>
+              <div id="submit-form-template" class="btn btn-sm btn-success">Применить</div>
             </div>
 
             <div id="ranges-view-block" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 col">
