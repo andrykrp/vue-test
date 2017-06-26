@@ -6,7 +6,7 @@
 
           <div class="modal-header">
             <slot name="header">
-              default header
+              default body
             </slot>
           </div>
 
@@ -17,12 +17,9 @@
           </div>
 
           <div class="modal-footer">
-            <slot name="footer">
-              default footer
               <button class="modal-default-button" @click="$emit('close')">
-                OK
+                Готово
               </button>
-            </slot>
           </div>
         </div>
       </div>
@@ -50,11 +47,11 @@
 
   .modal-container {
     width: 300px;
-    margin: 0px auto;
-    padding: 20px 30px;
+    margin: 0 auto;
+    padding: 10px 40px;
     background-color: #fff;
-    border-radius: 2px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+    border-radius: 40px;
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, .33);
     transition: all .3s ease;
     font-family: Helvetica, Arial, sans-serif;
   }

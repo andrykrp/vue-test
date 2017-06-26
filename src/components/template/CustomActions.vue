@@ -1,9 +1,8 @@
 <template>
   <div class="custom-actions">
-    <button class="ui basic button" @click="itemAction('/template/view', rowData, rowIndex)"><i class="zoom icon"></i>
+    <button class="ui basic button" @click="itemAction('/template/view', rowData, rowIndex)"><i class="edit icon"></i>
     </button>
-    <button class="ui basic button" @click="itemAction('/template/edit', rowData, rowIndex)"><i class="edit icon"></i>
-    </button>
+    <!--<button class="ui basic button" @click="itemAction('/template/edit', rowData, rowIndex)"><i class="edit icon"></i></button>-->
   </div>
 </template>
 

@@ -17,13 +17,13 @@
                 :append-params="moreParams"
                 :query-params="{ sort: 'sort_order', page: 'page_no', perPage: 'page_size' }"
       ></vuetable>
-      <div class="vuetable-pagination ui basic segment grid">
-        <vuetable-pagination-info
-          ref="paginationInfo"
-          no-data-template="..."
-        ></vuetable-pagination-info>
-        <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
-      </div>
+      <!--<div class="vuetable-pagination ui basic segment grid">-->
+        <!--<vuetable-pagination-info-->
+          <!--ref="paginationInfo"-->
+          <!--no-data-template="..."-->
+        <!--&gt;</vuetable-pagination-info>-->
+        <!--<vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>-->
+      <!--</div>-->
     </div>
   </div>
 </template>
@@ -37,8 +37,8 @@
 
   import VueEvents from 'vue-events'
   import Vuetable from 'vuetable-2/src/components/Vuetable'
-  import VuetablePagination from 'vuetable-2/src/components/VuetablePagination'
-  import VuetablePaginationInfo from 'vuetable-2/src/components/VuetablePaginationInfo'
+//  import VuetablePagination from 'vuetable-2/src/components/VuetablePagination'
+//  import VuetablePaginationInfo from 'vuetable-2/src/components/VuetablePaginationInfo'
 
   Vue.use(VueEvents)
   Vue.component('custom-actions', CustomActions)
@@ -49,15 +49,16 @@
     name: 'template',
     components: {
       Vuetable,
-      VuetablePagination,
-      VuetablePaginationInfo
+//      VuetablePagination,
+//      VuetablePaginationInfo
     },
     data () {
       return {
         msg: 'Управление шаблонами',
         fields: [{
-          name: 'id',
-          title: 'ИД',
+          name: 'state',
+          title: 'Активен',
+          callback: 'convertToIcon',
           titleClass: 'center aligned w100',
           dataClass: 'center aligned'
         }, {
@@ -71,8 +72,8 @@
           callback: 'urlLink'
         }, {
           name: '__component:custom-actions',   // <----
-          title: 'Действия',
-          titleClass: 'center aligned w150',
+          title: 'Ред.',
+          titleClass: 'center aligned w100',
           dataClass: 'center aligned'
         }],
         sortOrder: [
@@ -92,6 +93,9 @@
     methods: {
       allcap (value) {
         return value.toUpperCase()
+      },
+      convertToIcon (value) {
+        return value === 'active' ? '<span class="glyphicon glyphicon-ok"></span>' : '<span class="glyphicon glyphicon-remove"></span>';
       },
       urlLink (value) {
         return '<a target="_blank" class="link" href="' + value.url + '"><img class="link" src="' + value.logo + '" /></a>'
@@ -134,8 +138,12 @@
 </script>
 
 <style>
-  .w150 {
+  .w100 {
     width: 100px;
+  }
+
+  .w150 {
+    width: 150px;
   }
 
   .vuetable th#_id {
@@ -173,7 +181,7 @@
       width: 100%;
     }
 
-    .ui.table:not(.unstackable)  {
+    .ui.table:not(.unstackable) {
       border: none;
     }
 
@@ -186,14 +194,14 @@
 
     .ui.selectable.table tbody tr:hover,
     .ui.table tbody tr td.selectable:hover {
-      background: rgba(0,0,0,.05)!important;
-      color: rgba(0,0,0,.95)!important;
+      background: rgba(0, 0, 0, .05) !important;
+      color: rgba(0, 0, 0, .95) !important;
     }
 
     .ui.selectable.table tbody tr.vuetable-detail-row:hover,
     .ui.table tbody tr.vuetable-detail-row td.selectable:hover {
-      background: none!important;
-      color: rgba(0,0,0,.95)!important;
+      background: none !important;
+      color: rgba(0, 0, 0, .95) !important;
       border: none;
     }
 
@@ -219,18 +227,18 @@
 
     .ui.table:not(.unstackable) tbody > tr {
       background: none;
-      border: 1px solid rgba(34,36,38,.1)!important;
+      border: 1px solid rgba(34, 36, 38, .1) !important;
       border-radius: 25px;
       box-shadow: 0px -2px 2px 0px rgba(0, 0, 0, 0.15) inset !important;
-      padding: 3px!important;
-      margin: 3px 2px!important;
+      padding: 3px !important;
+      margin: 3px 2px !important;
     }
 
     .ui.table:not(.unstackable) tbody > tr.vuetable-detail-row {
       background: none;
-      border: none!important;
+      border: none !important;
       border-radius: 0;
-      box-shadow: none!important;
+      box-shadow: none !important;
     }
 
     .ui.table:not(.unstackable) th:first-child,

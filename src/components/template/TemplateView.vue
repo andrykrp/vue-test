@@ -1,5 +1,26 @@
 <template>
   <div>
+
+    <range-modal-add v-if="showRangeAddPanel" @close="saveRange">
+      <div slot="header">
+        Добавить диапазон
+      </div>
+      <div id="range-add-body"  slot="body">
+        <div class="row">
+          <div class="form-group col-xs-5" style="text-align: left;">
+            <label for="range-start">Начало</label>
+            <input type="text" class="form-control" id="range-start">
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-xs-5" style="text-align: left;">
+            <label for="range-end">Окончание</label>
+            <input type="text" class="form-control" id="range-end">
+          </div>
+        </div>
+      </div>
+    </range-modal-add>
+
     <div class="row">
       <div id="edit-template" class="form-signin">
         <div class="col-md-3 col-sm-3" style="padding-bottom: 20px;">
@@ -20,6 +41,10 @@
             </modal>
 
           </div>
+
+          <div class="range-add-button">
+            <span class="glyphicon glyphicon-plus range-add" data-toggle="tooltip" title="Добавить диапазон" @click="showRangeAddPanel = true"></span>
+          </div>
         </div>
 
         <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12">
@@ -33,8 +58,14 @@
               <label>Выбор селлера</label>
               <lookup v-model="template.seller.id" :selectedItem="template.seller.id"></lookup>
             </div>
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 col">
-              <div id="submit-form-template" class="btn btn-sm btn-success">Применить</div>
+            <div class="row" style="display: inline">
+              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 col">
+                <div id="submit-form-template" class="btn btn-sm btn-success">Применить</div>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 col" style="margin: 0 auto; text-align: center">
+                <!--<div id="template-range-add" class="btn btn-sm btn-danger" style="float: right; ">+</div>-->
+
+              </div>
             </div>
 
             <div id="ranges-view-block" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 col">
@@ -124,6 +155,7 @@
   import ModalColorPicker from './ModalColorPicker'
   import DetailRow from './DetailRow'
   import RangeDetailRow from './../range/RangeDetailRow'
+  import RangeModalEdit from './../range/RangeModalEdit'
 
   import Lookup from './Lookup'
 
@@ -135,6 +167,7 @@
   Vue.component('modal', ModalColorPicker)
   Vue.component('my-detail-row', DetailRow)
   Vue.component('RangeDetailRow', RangeDetailRow)
+  Vue.component('range-modal-add', RangeModalEdit);
 
   export default {
     name: 'tview',
@@ -147,6 +180,7 @@
         template: [],
         sellers: null,
         showModal: false,
+        showRangeAddPanel: false,
         colors: [],
         fields: [{
           name: 'id',
@@ -179,6 +213,16 @@
       this.createElements()
     },
     methods: {
+      saveRange () {
+        var self = this;
+        console.log('rowData', self.rowData)
+        console.log('templ', self.$parent.$parent.template)
+        this.showRangeAddPanel = false;
+        $.get('http://localhost:8090/template/range/add?templateId=' + self.template.id + '&start=' + $('#range-start').val() + '&end=' + $('#range-end').val())
+          .then(function (response) {
+            self.$refs.rangesViewTable.refresh()
+          })
+      },
       convertToIcon (value) {
         return value === 'active' ? '<span class="glyphicon glyphicon-ok"></span>' : '<span class="glyphicon glyphicon-remove"></span>';
       },
@@ -203,6 +247,9 @@
             self.colors = {hex: response.color}
             if (!self.template.photo) {
               self.template.photo = 'http://placehold.it/300x300/D/ffffff?text=no+image'
+            }
+            if (!self.template.seller) {
+              self.template.seller = {id: 0}
             }
           }
         });
@@ -249,6 +296,27 @@
 </script>
 
 <style>
+
+  #range-add-body input {
+    width: auto;
+  }
+
+  .range-add-button {
+    padding: 25px 0;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  .range-add:hover {
+    cursor: pointer;
+    text-align: center;
+    -webkit-transition: background .5s ease-in-out, padding .5s ease-in-out;
+    -moz-transition: background .5s ease-in-out, padding .5s ease-in-out;
+    transition: background .5s ease-in-out, padding .5s ease-in-out;
+    padding-bottom: 5px;
+    border-bottom: solid 2px lightsalmon;
+    background-color: transparent;
+  }
 
   .text-bold {
     font-weight: 400;
