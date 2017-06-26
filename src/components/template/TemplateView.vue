@@ -201,7 +201,7 @@
           success: function (response) {
             self.template = response
             self.colors = {hex: response.color}
-            if (!self.template.photo){
+            if (!self.template.photo) {
               self.template.photo = 'http://placehold.it/300x300/D/ffffff?text=no+image'
             }
           }
@@ -227,7 +227,14 @@
             dataType: 'json',
             success: function (response) {
               self.template = response
-//              console.log(response)
+              $.notify({
+                title: 'Шаблон <strong>' + response.name + '</strong>',
+                message: 'успешно сохранён'
+              }, {
+                type: 'success',
+                delay: 2000,
+                timer: 500
+              });
             }
           });
         });

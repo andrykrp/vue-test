@@ -1,11 +1,11 @@
 <template>
-  <div :id="'range-details-' + rowData.id" class="btn-group range-edit" data-toggle="buttons-checkbox">
-    <range-modal-edit v-if="showModal" @close="showModal = false"></range-modal-edit>
+  <div :id="'range-details-' + rowData.id" class="range-edit">
     <div>
+      <range-modal-edit v-if="showModal" @close="showModal = false"></range-modal-edit>
       <span :id="'range-data-edit-' + rowData.id" :data-template-id="rowData.id" @click="showModal = true"
             class="glyphicon glyphicon-pencil"></span>
     </div>
-    <div>
+    <div class="btn-group" data-toggle="buttons-checkbox">
       <input :id="'range-data-state-' + rowData.id" type="checkbox" class="collapsed" data-toggle="toggle"
              data-onstyle="success" data-offstyle="danger" data-size="mini">
     </div>
@@ -33,8 +33,9 @@
         type: Number
       }
     },
-    created: function () {
+    mounted: function () {
       var self = this;
+      console.log('created', 'range-data-state-' + self.rowData.id)
       $('#range-data-state-' + self.rowData.id)
         .bootstrapToggle(self.rowData.state === 'active' ? 'on' : 'off')
         .change(function () {
