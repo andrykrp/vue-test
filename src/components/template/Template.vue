@@ -17,13 +17,6 @@
                 :append-params="moreParams"
                 :query-params="{ sort: 'sort_order', page: 'page_no', perPage: 'page_size' }"
       ></vuetable>
-      <!--<div class="vuetable-pagination ui basic segment grid">-->
-        <!--<vuetable-pagination-info-->
-          <!--ref="paginationInfo"-->
-          <!--no-data-template="..."-->
-        <!--&gt;</vuetable-pagination-info>-->
-        <!--<vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>-->
-      <!--</div>-->
     </div>
   </div>
 </template>
@@ -37,8 +30,6 @@
 
   import VueEvents from 'vue-events'
   import Vuetable from 'vuetable-2/src/components/Vuetable'
-//  import VuetablePagination from 'vuetable-2/src/components/VuetablePagination'
-//  import VuetablePaginationInfo from 'vuetable-2/src/components/VuetablePaginationInfo'
 
   Vue.use(VueEvents)
   Vue.component('custom-actions', CustomActions)
@@ -48,9 +39,7 @@
   export default {
     name: 'template',
     components: {
-      Vuetable,
-//      VuetablePagination,
-//      VuetablePaginationInfo
+      Vuetable
     },
     data () {
       return {

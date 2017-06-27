@@ -49,17 +49,17 @@
 
         <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12">
           <div class="row row-top-padded">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 col">
+            <div id="template-name" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 col">
               <label>Имя шаблона</label>
               <input name="template-name" type="text" v-model="template.name" class="form-control" style=""
                      placeholder="Имя шаблона">
             </div>
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 col">
+            <div id="template-seller" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 col">
               <label>Выбор селлера</label>
               <lookup v-model="template.seller.id" :selectedItem="template.seller.id"></lookup>
             </div>
             <div class="row" style="display: inline">
-              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 col">
+              <div id="template-submit" class="col-lg-6 col-md-6 col-sm-6 col-xs-6 col">
                 <div id="submit-form-template" class="btn btn-sm btn-success">Применить</div>
               </div>
               <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 col" style="margin: 0 auto; text-align: center">
@@ -296,6 +296,18 @@
 </script>
 
 <style>
+
+  @media only screen and (max-width: 1200px) {
+    #template-name, #template-seller, #template-submit, #ranges-view-block {
+      padding-left: 50px;
+    }
+  }
+
+  @media only screen and (max-width: 992px) {
+    #template-name, #template-seller, #template-submit, #ranges-view-block {
+      padding-left: 100px;
+    }
+  }
 
   #range-add-body input {
     width: auto;
